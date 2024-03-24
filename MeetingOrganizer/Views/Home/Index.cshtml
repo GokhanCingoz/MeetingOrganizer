@@ -1,0 +1,186 @@
+﻿@model List<MeetingViewModel>
+@{
+    ViewData["Title"] = "Anasayfa";
+}
+
+<h3 class="text-center">TOPLANTI LİSTESİ</h3>
+<button type="button" class="btn btn-primary mb-4 mt-2" data-bs-toggle="modal" data-bs-target="#meetingModal">Toplantı Ekle</button>
+
+<table id="example" class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Toplantı Konusu</th>
+            <th>Toplantı Tarihi</th>
+            <th>Başlangıç Saati</th>
+            <th>Bitiş Saati</th>
+            <th>Katılımcılar</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var meeting in Model)
+        {
+            <tr>
+                <td>@meeting.Subject</td>
+                <td>@meeting.Date.ToString("dd-MM-yyyy")</td>
+                <td>@meeting.StartTime.ToString(@"hh\:mm")</td>
+                <td>@meeting.EndTime.ToString(@"hh\:mm")</td>
+                <td>@(meeting.Participants != null ? string.Join("; ", meeting.Participants.Select(x => x.Name + " " + x.Surname)) : "-")</td>
+                <td>
+                    <button type="button" class="btn btn-secondary" style="margin-right:15px;" data-bs-toggle="modal" data-bs-target="#meetingModal" onclick="getMeeting(@meeting.Id)">Düzenle</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteMeeting(@meeting.Id)">Sil</button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="meetingModalLabel">Toplantı Bilgileri</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="hidden" id="Id" />
+                    <div class="mb-3">
+                        <label for="Subject" class="col-form-label">Toplantı Konusu</label>
+                        <input type="text" class="form-control" id="Subject">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Date" class="col-form-label">Toplantı Tarihi</label>
+                        <input type="date" class="form-control" id="Date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="StartTime" class="col-form-label">Başlangıç Saati</label>
+                        <input type="time" class="form-control" id="StartTime">
+                    </div>
+                    <div class="mb-3">
+                        <label for="EndTime" class="col-form-label">Bitiş Saati</label>
+                        <input type="time" class="form-control" id="EndTime">
+                    </div>
+                    <div id="participantDiv">
+                        @await Html.PartialAsync("_ParticipantPartialView", new List<ParticipantViewModel>())
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveMeeting()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    function saveMeeting() {
+        var data = {
+            Id: $("#Id").val(),
+            Subject: $("#Subject").val(),
+            Date: $("#Date").val(),
+            StartTime: $("#StartTime").val(),
+            EndTime: $("#EndTime").val()
+        }
+
+        $.ajax({
+            url: '@Url.Action("SaveMeeting","Home")',
+            type: 'POST',
+            dataType: 'json',
+            data: data,
+            success: function (response) {
+                debugger;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'İşlem başarılı!',
+                    text: response.message,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    onClose: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error: function (err) {
+
+            }
+        });
+    }
+
+    function deleteMeeting(id) {
+        Swal.fire({
+            title: 'Toplantıyı silmek istediğinize emin misiniz?',
+            text: "Bu işlem geri alınamaz!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteMeeting","Home")' + '?id=' + id,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: id,
+                    success: function (response) {
+                        if (response.result) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'İşlem başarılı!',
+                                text: response.message,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                onClose: function () {
+                                    location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'İşlem başarısız!',
+                                text: response.message,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                onClose: function () {
+                                    location.reload();
+                                }
+                            });
+                        }
+
+                    },
+                    error: function (err) {
+
+                    }
+                });
+            }
+        })
+    }
+
+    function getMeeting(id){
+        $.ajax({
+            url: '@Url.Action("GetMeeting","Home")' + '?id=' + id,
+            type: 'POST',
+            dataType: 'json',
+            data: id,
+            success: function (response) {
+                debugger;
+                $("#Id").val(response.id);
+                $("#Subject").val(response.subject);
+                $("#Date").val(response.date);
+                $("#StartTime").val(response.starttime);
+                $("#EndTime").val(response.endtime);
+
+                $("#participantDiv").load('@Url.Action("GetParticipantPartial","Home")')
+            },
+            error: function (err) {
+
+            }
+        });
+    }
+
+</script>

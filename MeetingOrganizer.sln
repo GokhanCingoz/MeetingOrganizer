@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingOrganizer", "MeetingOrganizer\MeetingOrganizer.csproj", "{9F58FAE6-8B90-4805-9C3E-E52AD087F917}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingOrganizerApi", "MeetingOrganizerApi\MeetingOrganizerApi.csproj", "{CCEF9326-C8D2-4FEC-B1B0-EFA0020DF6A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F58FAE6-8B90-4805-9C3E-E52AD087F917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F58FAE6-8B90-4805-9C3E-E52AD087F917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F58FAE6-8B90-4805-9C3E-E52AD087F917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F58FAE6-8B90-4805-9C3E-E52AD087F917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCEF9326-C8D2-4FEC-B1B0-EFA0020DF6A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCEF9326-C8D2-4FEC-B1B0-EFA0020DF6A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCEF9326-C8D2-4FEC-B1B0-EFA0020DF6A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCEF9326-C8D2-4FEC-B1B0-EFA0020DF6A2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA0BB871-D2D0-4F34-9366-27A0DAC85A6A}
+	EndGlobalSection
+EndGlobal

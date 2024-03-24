@@ -1,0 +1,98 @@
+﻿@model List<ParticipantViewModel>
+
+<hr />
+<h5 class=""><b>Katılımcılar</b></h5>
+<button type="button" class="btn btn-primary mb-4 mt-2" data-bs-toggle="modal" data-bs-target="#participantModal">Katılımcı Ekle</button>
+
+<table id="participants" class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>Katılımcı Adı</th>
+            <th>Katılımcı Soyadı</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var participant in Model)
+        {
+            <tr>
+                <td>@participant.Name</td>
+                <td>@participant.Surname</td>
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="deleteParticipant('@participant.Guid')">Sil</button>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<div class="modal fade" id="participantModal" tabindex="-1" aria-labelledby="participantModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color:ghostwhite">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="participantModalLabel">Katılımcı Bilgileri</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="Subject" class="col-form-label">Adı</label>
+                        <input type="text" class="form-control" id="name" style="background-color:ghostwhite">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Date" class="col-form-label">Soyadı</label>
+                        <input type="text" class="form-control" id="surname" style="background-color:ghostwhite">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveParticipant()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function saveParticipant() {
+        var data = {
+            Name: $("#name").val(),
+            Surname: $("#surname").val()
+        }
+
+        $.ajax({
+            url: '@Url.Action("AddParticipant","Home")',
+            type: 'POST',
+            dataType: 'json',
+            data: data,
+            success: function (response) {
+                if (response.result) {
+                    $("#participantDiv").load('@Url.Action("GetParticipantPartial","Home")')
+                }
+            },
+            error: function (err) {
+
+            }
+        });
+    }
+    function deleteParticipant(guid) {
+        var data = {
+            Guid: guid
+        }
+
+        $.ajax({
+            url: '@Url.Action("DeleteParticipant","Home")',
+            type: 'POST',
+            dataType: 'json',
+            data: data,
+            success: function (response) {
+                if (response.result) {
+                    $("#participantDiv").load('@Url.Action("GetParticipantPartial","Home")')
+                }
+            },
+            error: function (err) {
+
+            }
+        });
+    }
+</script>
